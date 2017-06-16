@@ -1,0 +1,36 @@
+{
+  "name": "kinesis-fanout",
+  "version": "1.0.0",
+  "author": "Alex Casalboni",
+  "description": "Kinesis Streams fanout with Kinesis Analytics and the Serverless Framework",
+  "scripts": {
+    "create": "node ./kinesis-analytics/create.js",
+    "delete": "node ./kinesis-analytics/delete.js",
+    "putrecords": "node ./kinesis-analytics/putRecords.js",
+    "discover": "node ./kinesis-analytics/discover.js",
+    "toggle": "node ./kinesis-analytics/toggle.js",
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "aaa"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "serverless",
+    "serverless framework",
+    "aws",
+    "aws lambda",
+    "amazon kinesis",
+    "kinesis streams",
+    "kinesis analytics"
+  ],
+  "devDependencies": {
+    "aws-sdk": "^2.72.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "js-yaml": "^3.8.4"
+  }
+}
