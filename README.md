@@ -165,4 +165,3 @@ Contributors and PRs are always welcome!
 ### Tests and coverage
 
 Install dev dependencies with `npm install --dev`. 
-
