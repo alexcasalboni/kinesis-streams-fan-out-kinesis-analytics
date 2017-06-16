@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "ID",
+    "SqlType": "INTEGER",
+    "Mapping": "$.ID"
+  },
+  {
+    "Name": "USERNAME",
+    "SqlType": "VARCHAR(200)",
+    "Mapping": "$.USERNAME"
+  },
+  {
+    "Name": "AMOUNT",
+    "SqlType": "DECIMAL(5,2)",
+    "Mapping": "$.AMOUNT"
+  }
+]
