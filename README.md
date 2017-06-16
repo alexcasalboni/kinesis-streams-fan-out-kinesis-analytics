@@ -114,7 +114,7 @@ Also, Kinesis Analytics will need to know the exact data model of the input stre
 
 In case you decide to change the records structure, here are the two commands you'll need to run:
 
-```
+```bash
 $ npm run putrecords -- -I Transactions -N 100
 $ npm run discover -- -I {TransactionsStreamARN} -P {KinesisAnalyticsIAMRoleARN}
 
