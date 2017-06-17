@@ -7,7 +7,7 @@ For example, if you have 10 shards and you push 8,000 events per second with an 
 
 You could implement the fan-out with AWS Lambda (great resource [here](https://github.com/awslabs/aws-lambda-fanout)), but you'd have to deal with API calls and retry issues yourself to avoid duplicated events across output channels.
 
-This repository is a reference architecture to **solve this problem with Kinesis Analytics**, which can stream data from an input Kinesis Stream to multiple out Kinesis Streams (or Kinesis Firehose delivery streams).
+This repository is a reference architecture to **solve the fan-out problem with Kinesis Analytics**, which can stream data from an input Kinesis Stream to multiple out Kinesis Streams (or Kinesis Firehose delivery streams).
 
 ![kinesis-analytics](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png)
 
