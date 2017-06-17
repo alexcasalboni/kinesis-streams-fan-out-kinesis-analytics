@@ -3,7 +3,7 @@ Amazon Kinesis Analytics can fan-out your Kinesis Streams and avoid read throttl
 
 Each Kinesis Streams shard can support a maximum total data **read rate of 2 MBps** (max 5 transactions), and a maximum total data **write rate of 1 MBps** (max 1,000 records). Even if you provision enough write capacity, **you are not free to connect as many consumers** as you'd like, especially with AWS Lambda, because you'll easily reach the read capacity.
 
-For example, if you have 10 shards and you push 8,000 events per second with an average size of 1KB each, you will be around 50% of your write capacity (5MBps out of 10MBps). If you connect three consumers though, you'll be trying to read around 24MBps (which is above your max read capacity of 20MBps).
+For example, if you have 10 shards and you push 8,000 events per second with an average size of 1KB each, you will be around 80% of your write capacity (8MBps out of 10MBps). If you connect three consumers though, you'll be trying to read around 24MBps (which is above your max read capacity of 20MBps).
 
 You could implement the fan-out with AWS Lambda (great resource [here](https://github.com/awslabs/aws-lambda-fanout)), but you'd have to deal with API calls and retry issues yourself to avoid duplicated events across output channels.
 
