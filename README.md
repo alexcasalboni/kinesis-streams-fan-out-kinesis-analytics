@@ -11,6 +11,8 @@ This repository is a reference architecture to **solve this problem with Kinesis
 
 ![kinesis-analytics](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png)
 
+(source: [AWS Documentation](http://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works.html))
+
 
 ## What's the scenario?
 
@@ -114,7 +116,7 @@ Also, Kinesis Analytics will need to know the exact data model of the input stre
 
 In case you decide to change the records structure, here are the two commands you'll need to run:
 
-```bash
+```bas
 $ npm run putrecords -- -I Transactions -N 100
 $ npm run discover -- -I {TransactionsStreamARN} -P {KinesisAnalyticsIAMRoleARN}
 
