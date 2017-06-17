@@ -11,7 +11,7 @@ This repository is a reference architecture to **solve this problem with Kinesis
 
 ![kinesis-analytics](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png)
 
-(source: [AWS Documentation](http://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works.html))
+(image source: [AWS Documentation](http://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works.html))
 
 
 ## What's the scenario?
