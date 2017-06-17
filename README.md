@@ -9,11 +9,14 @@ You could implement the fan-out with AWS Lambda (great resource [here](https://g
 
 This repository is a reference architecture to **solve the fan-out problem with Kinesis Analytics**, which can stream data from an input Stream to multiple output Streams (or Firehose delivery streams).
 
+
 <p align="center">
   <img src="https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png" alt="Kinesis Analytics architecture"/>
 </p>
 
+<p align="center">
 (image source: [AWS Documentation](http://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works.html))
+</p>
 
 
 ## What's the scenario?
@@ -24,7 +27,9 @@ We have an **input Stream** where we'll be pushing fake transactions records (id
 
 One stream will contain **only positive transactions** (amount >= 0), and the second stream will contain **only negative transactions** (amount < 0).
 
-These sample Lambda Functions don't do much besides logging the batch of 100 records into CloudWatch logs.
+You may want to do this to solve the read throughput problem, to further split the input stream into three or four streams, or just to simplify the processing logic and flow of each individual case.
+
+For now, these sample Lambda Functions don't do much besides logging the batch of 100 records into CloudWatch logs.
 
 ## How to deploy the Kinesis Analytics Application
 
@@ -62,13 +67,13 @@ The CloudFormation Stack will provide the following Outputs:
 * **NegativeTransactionsStreamARN**:  the second output Kinesis Stream
 * **KinesisAnalyticsIAMRoleARN**: the IAM Role required for Kinesis Analytics to read from and write into the three Kinesis Streams
 
-You can find these values with this command:
+You can find these values by running the following serverless command:
 
 ```
 $ sls info --verbose
 ```
 
-You should take note of these ARNs and use them in the following commands.
+You should take note of these ARNs and use them in the following commands (ideally it shouldn't be a manual process, but this was just a 4h side project).
 
 ### How to Create the Kinesis Analytics Application
 
@@ -88,6 +93,7 @@ This command will start or stop the Kinesis Application, based on the current st
 $ npm run toggle -- -N kinesis-fanout-app
 ```
 
+**Hint**: some intermediate status don't allow explicit transitions (e.g. "STARTING"), and you'll just have to wait :)
 
 ### How to Delete the Kinesis Analytics Application
 
@@ -97,7 +103,7 @@ This command will delete the Kinesis Application:
 $ npm run delete -- -N kinesis-fanout-app
 ```
 
-**Hint**: do this when your're done with all the other commands :)
+**Hint**: do this only when your're done with all the other commands (Kinesis Analytics is charged per-hour).
 
 ### How to Put Records into the main Kinesis Stream
 
@@ -112,7 +118,7 @@ $ npm run putrecords -- -I Transactions -N 100
 
 ## Where does the magic happen?
 
-In order to stream the same data from the main Kinesis Stream to the other two, we will need a SQL query that runs on real-time data and filters it based on the transaction amount.
+In order to stream your records from the main Kinesis Stream to the other two, we will need a SQL query that runs on real-time data and filters/groups it based on the transaction amount.
 
 Also, Kinesis Analytics will need to know the exact data model of the input stream. I have defined it in [this file](./kinesis-analytics/input-schema.json), but you can easily change the records schema and then invoke the **DiscoverInputSchema API** to generate the exact mapping required by Kinesis Analytics.
 
@@ -153,14 +159,14 @@ CREATE OR REPLACE PUMP "STREAM_PUMP2"
         WHERE AMOUNT < 0;
 ```
 
-What's going on exactly?
+### Ok, but what's going on?
 
-* We define **two output destinations** with the very same structure, named *POSITIVE_TRANSACTIONS* and *NEGATIVE_TRANSACTIONS*, that have been connected to the corresponding Kinesis Streams (see source code [here](./kinesis-analytics/create.js#L88)).
+* We define **two output destinations** with the very same structure, named *POSITIVE_TRANSACTIONS* and *NEGATIVE_TRANSACTIONS*, and  we connect them to the corresponding Kinesis Streams (see source code [here](./kinesis-analytics/create.js#L88)).
 * We also define **two "pumps"** (with arbitrary names) that will buffer our data before writing into the output stream
 * For each pump, we define the **filtering query** that will write positive transactions to the first stream, and negative transactions to the second one
 
 
-**Note**: this SQL query will be executed in real-time on the incoming data, without any windowing or buffering. Well, in my tests it took a bit less than 2 seconds for a batch of 500 records to reach my Lambda Functions.
+**Note**: this SQL query will be executed in real-time on the incoming data, without any windowing or buffering. Well, in my tests it took a bit less than 2 seconds for a batch of 500 records to go through the secondary streams and reach my Lambda Functions.
 
 
 ## Contributing
