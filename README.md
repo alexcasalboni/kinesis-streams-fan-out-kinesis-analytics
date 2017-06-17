@@ -9,7 +9,9 @@ You could implement the fan-out with AWS Lambda (great resource [here](https://g
 
 This repository is a reference architecture to **solve the fan-out problem with Kinesis Analytics**, which can stream data from an input Stream to multiple output Streams (or Firehose delivery streams).
 
-![kinesis-analytics](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png)
+<p align="center">
+  <img src="https://docs.aws.amazon.com/kinesisanalytics/latest/dev/images/kinesis-app.png" alt="Kinesis Analytics architecture"/>
+</p>
 
 (image source: [AWS Documentation](http://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works.html))
 
