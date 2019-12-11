@@ -1,0 +1,16 @@
+{
+  "streams": [
+    {
+      "name": "DownStreamG",
+      "arn": "arn:aws:kinesis:ap-northeast-1:167855287371:stream/DownStreamG"
+    },
+    {
+      "name": "DownStreamH",
+      "arn": "arn:aws:kinesis:ap-northeast-1:167855287371:stream/DownStreamH"
+    },
+    {
+      "name": "DownStreamI",
+      "arn": "arn:aws:kinesis:ap-northeast-1:167855287371:stream/DownStreamI"
+    }
+  ]
+}

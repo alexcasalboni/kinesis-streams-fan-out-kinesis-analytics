@@ -1,7 +1,7 @@
 const program = require('commander');
 const AWS = require('aws-sdk');
 
-const DEFAULT_AWS_REGION = 'us-east-1';
+const DEFAULT_AWS_REGION = 'ap-northeast-1';
 
 
 program
@@ -25,10 +25,11 @@ const kinesis = new AWS.Kinesis({region: program.region});
     return Promise.resolve()
         .then(putRecords)
         .then((res) => {
-            console.log("Done", res);
+            // console.log("Done", res);
+            return;
         }).catch((err) => {
             console.error("Error", err);
-        });    
+        });
 
 })();
 
@@ -37,7 +38,6 @@ function putRecords() {
     var params = {
       Records: Array.from(Array(parseInt(program.number))).map((_, i) => {
         const n = (Math.random() * 100).toFixed(2) * (Math.random() > 0.5 ? 1 : -1);
-        console.log("amount: ", n);
         const data = {
             ID: i,
             USERNAME: "admin" + i,

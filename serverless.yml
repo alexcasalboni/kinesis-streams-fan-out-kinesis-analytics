@@ -2,11 +2,12 @@ service: kinesis-stream-fanout
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs12.x
+  region: ap-northeast-1
 
 functions:
-  processPositive:
-    handler: lambda/handler.processPositive
+  processDownStreamA:
+    handler: lambda/handler.processDownStreamA
     timeout: 10
     events:
       - stream:
@@ -16,10 +17,10 @@ functions:
           enabled: true
           arn:
             Fn::GetAtt:
-              - PositiveTransactionsStream
+              - DownStreamA
               - Arn
-  processNegative:
-    handler: lambda/handler.processNegative
+  processDownStreamB:
+    handler: lambda/handler.processDownStreamB
     timeout: 10
     events:
       - stream:
@@ -29,26 +30,224 @@ functions:
           enabled: true
           arn:
             Fn::GetAtt:
-              - NegativeTransactionsStream
+              - DownStreamB
+              - Arn
+  processDownStreamC:
+    handler: lambda/handler.processDownStreamC
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamC
+              - Arn
+  processDownStreamD:
+    handler: lambda/handler.processDownStreamD
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamD
+              - Arn
+  processDownStreamE:
+    handler: lambda/handler.processDownStreamE
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamE
+              - Arn
+  processDownStreamF:
+    handler: lambda/handler.processDownStreamF
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamF
+              - Arn
+  processDownStreamG:
+    handler: lambda/handler.processDownStreamG
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamG
+              - Arn
+  processDownStreamH:
+    handler: lambda/handler.processDownStreamH
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamH
+              - Arn
+  processDownStreamI:
+    handler: lambda/handler.processDownStreamI
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamI
+              - Arn
+  processDownStreamJ:
+    handler: lambda/handler.processDownStreamJ
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamJ
+              - Arn
+  processDownStreamK:
+    handler: lambda/handler.processDownStreamK
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamK
+              - Arn
+  processDownStreamL:
+    handler: lambda/handler.processDownStreamL
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          enabled: true
+          arn:
+            Fn::GetAtt:
+              - DownStreamL
               - Arn
 
 resources:
   Resources:
-    TransactionsStream:
+    MasterStream:
       Type: AWS::Kinesis::Stream
       Properties:
-        Name: Transactions
+        Name: MasterStream
         ShardCount: 1
-    PositiveTransactionsStream:
+    DownStreamA:
       Type: AWS::Kinesis::Stream
       Properties:
-        Name: PositiveTransactions
+        Name: DownStreamA
         ShardCount: 1
-    NegativeTransactionsStream:
+    DownStreamB:
       Type: AWS::Kinesis::Stream
       Properties:
-        Name: NegativeTransactions
+        Name: DownStreamB
         ShardCount: 1
+    DownStreamC:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamC
+        ShardCount: 1
+    DownStreamD:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamD
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamA
+    DownStreamE:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamE
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamB
+    DownStreamF:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamF
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamC
+    DownStreamG:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamG
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamD
+    DownStreamH:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamH
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamE
+    DownStreamI:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamI
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamF
+    DownStreamJ:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamJ
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamG
+    DownStreamK:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamK
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamH
+    DownStreamL:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: DownStreamL
+        ShardCount: 1
+      "DependsOn":
+        - DownStreamI
     KinesisAnalyticsIAMRole:
       Type: AWS::IAM::Role
       Properties:
@@ -72,44 +271,93 @@ resources:
                     - "kinesis:GetRecords"
                   Resource:
                     'Fn::GetAtt':
-                      - TransactionsStream
+                      - MasterStream
                       - Arn
                 - Effect: "Allow"
                   Action:
                     - "kinesis:DescribeStream"
                     - "kinesis:PutRecord"
                     - "kinesis:PutRecords"
-                  Resource:
-                    'Fn::GetAtt':
-                      - PositiveTransactionsStream
-                      - Arn
-                - Effect: "Allow"
-                  Action:
-                    - "kinesis:DescribeStream"
-                    - "kinesis:PutRecord"
-                    - "kinesis:PutRecords"
-                  Resource:
-                    'Fn::GetAtt':
-                      - NegativeTransactionsStream
-                      - Arn
+                  Resource: "*"
+
   Outputs:
-    TransactionsStreamARN:
-      Description: Transactions Kinesis Stream ARN
+    MasterStreamARN:
+      Description: Master Kinesis Stream ARN
       Value:
         'Fn::GetAtt':
-          - TransactionsStream
+          - MasterStream
           - Arn
-    PositiveTransactionsStreamARN:
-      Description: Positive Transactions Kinesis Stream ARN
+    DownStreamAArn:
+      Description: DownStreamA Kinesis Stream ARN
       Value:
         'Fn::GetAtt':
-          - PositiveTransactionsStream
+          - DownStreamA
           - Arn
-    NegativeTransactionsStreamARN:
-      Description: Negative Transactions Kinesis Stream ARN
+    DownStreamBArn:
+      Description: DownStreamB Kinesis Stream ARN
       Value:
         'Fn::GetAtt':
-          - NegativeTransactionsStream
+          - DownStreamB
+          - Arn
+    DownStreamCArn:
+      Description: DownStreamC Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamC
+          - Arn
+    DownStreamDArn:
+      Description: DownStreamD Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamD
+          - Arn
+    DownStreamEArn:
+      Description: DownStreamE Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamE
+          - Arn
+    DownStreamFArn:
+      Description: DownStreamF Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamF
+          - Arn
+    DownStreamGArn:
+      Description: DownStreamG Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamG
+          - Arn
+    DownStreamHArn:
+      Description: DownStreamH Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamH
+          - Arn
+    DownStreamIArn:
+      Description: DownStreamI Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamI
+          - Arn
+    DownStreamJArn:
+      Description: DownStreamJ Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamJ
+          - Arn
+    DownStreamKArn:
+      Description: DownStreamK Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamK
+          - Arn
+    DownStreamLArn:
+      Description: DownStreamL Kinesis Stream ARN
+      Value:
+        'Fn::GetAtt':
+          - DownStreamL
           - Arn
     KinesisAnalyticsIAMRoleARN:
       Description: IAM Role ARN for Kinesis Analytics

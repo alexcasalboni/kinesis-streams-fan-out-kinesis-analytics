@@ -1,0 +1,2130 @@
+{
+  "service": {
+    "service": "kinesis-stream-fanout",
+    "serviceObject": {
+      "name": "kinesis-stream-fanout"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*?]+?)}",
+      "name": "aws",
+      "runtime": "nodejs12.x",
+      "region": "ap-northeast-1",
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ProcessDownStreamALogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamA"
+            }
+          },
+          "ProcessDownStreamBLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamB"
+            }
+          },
+          "ProcessDownStreamCLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamC"
+            }
+          },
+          "ProcessDownStreamDLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamD"
+            }
+          },
+          "ProcessDownStreamELogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamE"
+            }
+          },
+          "ProcessDownStreamFLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamF"
+            }
+          },
+          "ProcessDownStreamGLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamG"
+            }
+          },
+          "ProcessDownStreamHLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamH"
+            }
+          },
+          "ProcessDownStreamILogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamI"
+            }
+          },
+          "ProcessDownStreamJLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamJ"
+            }
+          },
+          "ProcessDownStreamKLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamK"
+            }
+          },
+          "ProcessDownStreamLLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/kinesis-stream-fanout-dev-processDownStreamL"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "dev",
+                        "kinesis-stream-fanout",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kinesis-stream-fanout-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/kinesis-stream-fanout-dev*:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamA",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamB",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamC",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamD",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamE",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamF",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamG",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamH",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamI",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamJ",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamK",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:GetRecords",
+                          "kinesis:GetShardIterator",
+                          "kinesis:DescribeStream",
+                          "kinesis:ListStreams"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "DownStreamL",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "kinesis-stream-fanout",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "ProcessDownStreamALambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamA",
+              "Handler": "lambda/handler.processDownStreamA",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamALogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamALambdaVersionHmhGmp0Zj2aq3FPXOEAamWylYAHDzboeJBpy43ZVbo": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamALambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamBLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamB",
+              "Handler": "lambda/handler.processDownStreamB",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamBLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamBLambdaVersionxDz7G0O47yQ4Fzpww963OgmUVa0BcCgorrgldGrS0": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamBLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamCLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamC",
+              "Handler": "lambda/handler.processDownStreamC",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamCLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamCLambdaVersionyHgOfIGddalL4oA1D2MrThKGTxDQylpMoK5rnlo39Q": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamCLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamDLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamD",
+              "Handler": "lambda/handler.processDownStreamD",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamDLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamDLambdaVersionqridTGEf9Ewv4ryzRPsxDpnSo8X7p5p9wLN7lKI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamDLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamELambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamE",
+              "Handler": "lambda/handler.processDownStreamE",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamELogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamELambdaVersionkDrYtZwi7H1M6pkTaPAKqVTfssaWE8MymefZK5GWNU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamELambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamFLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamF",
+              "Handler": "lambda/handler.processDownStreamF",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamFLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamFLambdaVersion39VLaY97CTqYbmBoXQaQu4YctavmoGC92i1wq23kIQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamFLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamGLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamG",
+              "Handler": "lambda/handler.processDownStreamG",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamGLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamGLambdaVersionPPxLS4Ens1NOR14Ih5rhp8GWcxRocjAaWIQiz7C0M": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamGLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamHLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamH",
+              "Handler": "lambda/handler.processDownStreamH",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamHLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamHLambdaVersionJRMoSp3Uc3PSI79cc7UgsEe4Elz5hQOYvVFJVibDNQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamHLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamILambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamI",
+              "Handler": "lambda/handler.processDownStreamI",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamILogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamILambdaVersionDE3hPkotg2EKfwjX3CC19802A8cHhhDgTb5rV97s": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamILambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamJLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamJ",
+              "Handler": "lambda/handler.processDownStreamJ",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamJLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamJLambdaVersiona20K5HEkS9e7Xr7xXHCSp2AFLp4cX6hMBSA1MzkJ07M": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamJLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamKLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamK",
+              "Handler": "lambda/handler.processDownStreamK",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamKLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamKLambdaVersiongQPsxpjU413v3QahrU0eGrlcOHJRM1nSYRbnOwDyk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamKLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamLLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z/kinesis-stream-fanout.zip"
+              },
+              "FunctionName": "kinesis-stream-fanout-dev-processDownStreamL",
+              "Handler": "lambda/handler.processDownStreamL",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 10
+            },
+            "DependsOn": [
+              "ProcessDownStreamLLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ProcessDownStreamLLambdaVersionra0M7OD80jceXfLoSNcZ2Bnxz4EZN3z9ucdqmM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ProcessDownStreamLLambdaFunction"
+              },
+              "CodeSha256": "JCo9aOTjiO4mtB9ys99Z3miE8wKKSkHnA4HRk5T0Yv4="
+            }
+          },
+          "ProcessDownStreamAEventSourceMappingKinesisDownStreamA": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamA",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamALambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamBEventSourceMappingKinesisDownStreamB": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamB",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamBLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamCEventSourceMappingKinesisDownStreamC": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamC",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamCLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamDEventSourceMappingKinesisDownStreamD": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamD",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamDLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamEEventSourceMappingKinesisDownStreamE": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamE",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamELambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamFEventSourceMappingKinesisDownStreamF": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamF",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamFLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamGEventSourceMappingKinesisDownStreamG": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamG",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamGLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamHEventSourceMappingKinesisDownStreamH": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamH",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamHLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamIEventSourceMappingKinesisDownStreamI": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamI",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamILambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamJEventSourceMappingKinesisDownStreamJ": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamJ",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamJLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamKEventSourceMappingKinesisDownStreamK": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamK",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamKLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "ProcessDownStreamLEventSourceMappingKinesisDownStreamL": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": "IamRoleLambdaExecution",
+            "Properties": {
+              "BatchSize": 100,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "DownStreamL",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ProcessDownStreamLLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "StartingPosition": "TRIM_HORIZON",
+              "Enabled": "True"
+            }
+          },
+          "MasterStream": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "MasterStream",
+              "ShardCount": 1
+            }
+          },
+          "DownStreamA": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamA",
+              "ShardCount": 1
+            }
+          },
+          "DownStreamB": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamB",
+              "ShardCount": 1
+            }
+          },
+          "DownStreamC": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamC",
+              "ShardCount": 1
+            }
+          },
+          "DownStreamD": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamD",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamA"
+            ]
+          },
+          "DownStreamE": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamE",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamB"
+            ]
+          },
+          "DownStreamF": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamF",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamC"
+            ]
+          },
+          "DownStreamG": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamG",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamD"
+            ]
+          },
+          "DownStreamH": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamH",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamE"
+            ]
+          },
+          "DownStreamI": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamI",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamF"
+            ]
+          },
+          "DownStreamJ": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamJ",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamG"
+            ]
+          },
+          "DownStreamK": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamK",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamH"
+            ]
+          },
+          "DownStreamL": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+              "Name": "DownStreamL",
+              "ShardCount": 1
+            },
+            "DependsOn": [
+              "DownStreamI"
+            ]
+          },
+          "KinesisAnalyticsIAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Sid": "KinesisAnalyticsAssumeRole",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": "kinesisanalytics.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole"
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": "kinesis-stream-fanout-kinesis-analytics",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:DescribeStream",
+                          "kinesis:GetShardIterator",
+                          "kinesis:GetRecords"
+                        ],
+                        "Resource": {
+                          "Fn::GetAtt": [
+                            "MasterStream",
+                            "Arn"
+                          ]
+                        }
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "kinesis:DescribeStream",
+                          "kinesis:PutRecord",
+                          "kinesis:PutRecords"
+                        ],
+                        "Resource": "*"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "ProcessDownStreamALambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamALambdaVersionHmhGmp0Zj2aq3FPXOEAamWylYAHDzboeJBpy43ZVbo"
+            }
+          },
+          "ProcessDownStreamBLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamBLambdaVersionxDz7G0O47yQ4Fzpww963OgmUVa0BcCgorrgldGrS0"
+            }
+          },
+          "ProcessDownStreamCLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamCLambdaVersionyHgOfIGddalL4oA1D2MrThKGTxDQylpMoK5rnlo39Q"
+            }
+          },
+          "ProcessDownStreamDLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamDLambdaVersionqridTGEf9Ewv4ryzRPsxDpnSo8X7p5p9wLN7lKI"
+            }
+          },
+          "ProcessDownStreamELambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamELambdaVersionkDrYtZwi7H1M6pkTaPAKqVTfssaWE8MymefZK5GWNU"
+            }
+          },
+          "ProcessDownStreamFLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamFLambdaVersion39VLaY97CTqYbmBoXQaQu4YctavmoGC92i1wq23kIQ"
+            }
+          },
+          "ProcessDownStreamGLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamGLambdaVersionPPxLS4Ens1NOR14Ih5rhp8GWcxRocjAaWIQiz7C0M"
+            }
+          },
+          "ProcessDownStreamHLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamHLambdaVersionJRMoSp3Uc3PSI79cc7UgsEe4Elz5hQOYvVFJVibDNQ"
+            }
+          },
+          "ProcessDownStreamILambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamILambdaVersionDE3hPkotg2EKfwjX3CC19802A8cHhhDgTb5rV97s"
+            }
+          },
+          "ProcessDownStreamJLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamJLambdaVersiona20K5HEkS9e7Xr7xXHCSp2AFLp4cX6hMBSA1MzkJ07M"
+            }
+          },
+          "ProcessDownStreamKLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamKLambdaVersiongQPsxpjU413v3QahrU0eGrlcOHJRM1nSYRbnOwDyk"
+            }
+          },
+          "ProcessDownStreamLLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ProcessDownStreamLLambdaVersionra0M7OD80jceXfLoSNcZ2Bnxz4EZN3z9ucdqmM"
+            }
+          },
+          "MasterStreamARN": {
+            "Description": "Master Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "MasterStream",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamAArn": {
+            "Description": "DownStreamA Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamA",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamBArn": {
+            "Description": "DownStreamB Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamB",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamCArn": {
+            "Description": "DownStreamC Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamC",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamDArn": {
+            "Description": "DownStreamD Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamD",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamEArn": {
+            "Description": "DownStreamE Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamE",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamFArn": {
+            "Description": "DownStreamF Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamF",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamGArn": {
+            "Description": "DownStreamG Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamG",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamHArn": {
+            "Description": "DownStreamH Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamH",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamIArn": {
+            "Description": "DownStreamI Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamI",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamJArn": {
+            "Description": "DownStreamJ Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamJ",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamKArn": {
+            "Description": "DownStreamK Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamK",
+                "Arn"
+              ]
+            }
+          },
+          "DownStreamLArn": {
+            "Description": "DownStreamL Kinesis Stream ARN",
+            "Value": {
+              "Fn::GetAtt": [
+                "DownStreamL",
+                "Arn"
+              ]
+            }
+          },
+          "KinesisAnalyticsIAMRoleARN": {
+            "Description": "IAM Role ARN for Kinesis Analytics",
+            "Value": {
+              "Fn::GetAtt": [
+                "KinesisAnalyticsIAMRole",
+                "Arn"
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "processDownStreamA": {
+        "handler": "lambda/handler.processDownStreamA",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][2][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamA",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamB": {
+        "handler": "lambda/handler.processDownStreamB",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][3][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamB",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamC": {
+        "handler": "lambda/handler.processDownStreamC",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][4][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamC",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamD": {
+        "handler": "lambda/handler.processDownStreamD",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][5][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamD",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamE": {
+        "handler": "lambda/handler.processDownStreamE",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][6][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamE",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamF": {
+        "handler": "lambda/handler.processDownStreamF",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][7][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamF",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamG": {
+        "handler": "lambda/handler.processDownStreamG",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][8][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamG",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamH": {
+        "handler": "lambda/handler.processDownStreamH",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][9][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamH",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamI": {
+        "handler": "lambda/handler.processDownStreamI",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][10][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamI",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamJ": {
+        "handler": "lambda/handler.processDownStreamJ",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][11][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamJ",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamK": {
+        "handler": "lambda/handler.processDownStreamK",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][12][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamK",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      },
+      "processDownStreamL": {
+        "handler": "lambda/handler.processDownStreamL",
+        "timeout": 10,
+        "events": [
+          {
+            "stream": {
+              "type": "kinesis",
+              "batchSize": 100,
+              "startingPosition": "TRIM_HORIZON",
+              "enabled": true,
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][13][\"Resource\"][0]"
+              }
+            }
+          }
+        ],
+        "name": "kinesis-stream-fanout-dev-processDownStreamL",
+        "package": {},
+        "memory": 1024,
+        "runtime": "nodejs12.x",
+        "vpc": {}
+      }
+    },
+    "resources": {
+      "Resources": {
+        "MasterStream": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "MasterStream",
+            "ShardCount": 1
+          }
+        },
+        "DownStreamA": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamA",
+            "ShardCount": 1
+          }
+        },
+        "DownStreamB": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamB",
+            "ShardCount": 1
+          }
+        },
+        "DownStreamC": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamC",
+            "ShardCount": 1
+          }
+        },
+        "DownStreamD": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamD",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamA"
+          ]
+        },
+        "DownStreamE": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamE",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamB"
+          ]
+        },
+        "DownStreamF": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamF",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamC"
+          ]
+        },
+        "DownStreamG": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamG",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamD"
+          ]
+        },
+        "DownStreamH": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamH",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamE"
+          ]
+        },
+        "DownStreamI": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamI",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamF"
+          ]
+        },
+        "DownStreamJ": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamJ",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamG"
+          ]
+        },
+        "DownStreamK": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamK",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamH"
+          ]
+        },
+        "DownStreamL": {
+          "Type": "AWS::Kinesis::Stream",
+          "Properties": {
+            "Name": "DownStreamL",
+            "ShardCount": 1
+          },
+          "DependsOn": [
+            "DownStreamI"
+          ]
+        },
+        "KinesisAnalyticsIAMRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "KinesisAnalyticsAssumeRole",
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "kinesisanalytics.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": "kinesis-stream-fanout-kinesis-analytics",
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "kinesis:DescribeStream",
+                        "kinesis:GetShardIterator",
+                        "kinesis:GetRecords"
+                      ],
+                      "Resource": {
+                        "Fn::GetAtt": [
+                          "MasterStream",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "kinesis:DescribeStream",
+                        "kinesis:PutRecord",
+                        "kinesis:PutRecords"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "Outputs": {
+        "MasterStreamARN": {
+          "Description": "Master Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "MasterStream",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamAArn": {
+          "Description": "DownStreamA Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamA",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamBArn": {
+          "Description": "DownStreamB Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamB",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamCArn": {
+          "Description": "DownStreamC Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamC",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamDArn": {
+          "Description": "DownStreamD Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamD",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamEArn": {
+          "Description": "DownStreamE Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamE",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamFArn": {
+          "Description": "DownStreamF Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamF",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamGArn": {
+          "Description": "DownStreamG Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamG",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamHArn": {
+          "Description": "DownStreamH Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamH",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamIArn": {
+          "Description": "DownStreamI Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamI",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamJArn": {
+          "Description": "DownStreamJ Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamJ",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamKArn": {
+          "Description": "DownStreamK Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamK",
+              "Arn"
+            ]
+          }
+        },
+        "DownStreamLArn": {
+          "Description": "DownStreamL Kinesis Stream ARN",
+          "Value": {
+            "Fn::GetAtt": [
+              "DownStreamL",
+              "Arn"
+            ]
+          }
+        },
+        "KinesisAnalyticsIAMRoleARN": {
+          "Description": "IAM Role ARN for Kinesis Analytics",
+          "Value": {
+            "Fn::GetAtt": [
+              "KinesisAnalyticsIAMRole",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {},
+    "artifact": "/Users/terasawa-hajime/.ghq/github.com/terakoya76/kinesis-streams-fan-out-kinesis-analytics/.serverless/kinesis-stream-fanout.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/kinesis-stream-fanout/dev/1576046353653-2019-12-11T06:39:13.653Z",
+    "artifact": "kinesis-stream-fanout.zip"
+  }
+}

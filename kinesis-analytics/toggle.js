@@ -1,7 +1,7 @@
 const program = require('commander');
 const AWS = require('aws-sdk');
 
-const DEFAULT_AWS_REGION = 'us-east-1';
+const DEFAULT_AWS_REGION = 'ap-northeast-1';
 
 program
     .version('0.0.1')
@@ -37,7 +37,7 @@ const kinesisanalytics = new AWS.KinesisAnalytics({region: program.region});
             console.log("Done", res);
         }).catch((err) => {
             console.error("Something went wrong:", err);
-        });    
+        });
 
 })();
 
@@ -74,6 +74,6 @@ function stopApplication (application) {
       ApplicationName: program.name
     };
     return kinesisanalytics
-      .stopApplication(params) 
+      .stopApplication(params)
       .promise();
 }
